@@ -1,16 +1,16 @@
 const nacl = require("tweetnacl");
 nacl.util = require("tweetnacl-util");
 
-const victoria = nacl.box.keyPair();
+const serverPair = nacl.box.keyPair();
 
-function victoriaDecrypting(message, publicKey) {
-  //Getting Victoria's shared key
-  const victoria_shared_key = nacl.box.before(publicKey, victoria.secretKey);
+function serverDecrypting(message, publicKey) {
+  //Getting Server's shared key
+  const server_shared_key = nacl.box.before(publicKey, serverPair.secretKey);
   //Get the decoded message
   let decoded_message = nacl.box.open.after(
     message.cipher_text,
     message.one_time_code,
-    victoria_shared_key
+    server_shared_key
   );
   //Get the human readable message
   let plain_text = nacl.util.encodeUTF8(decoded_message);
@@ -30,7 +30,7 @@ const server = http.createServer().on("request", async (req, res) => {
   res.setHeader("Access-Control-Max-Age", 2592000); // 30 days
 
   if (req.method === "OPTIONS") {
-    res.write(JSON.stringify(victoria.publicKey));
+    res.write(JSON.stringify(serverPair.publicKey));
   } else if (req.method === "POST") {
     const buffers = [];
 
@@ -40,7 +40,7 @@ const server = http.createServer().on("request", async (req, res) => {
 
     const data = Buffer.concat(buffers).toString();
     const user = JSON.parse(data);
-    const password = victoriaDecrypting(
+    const password = serverDecrypting(
       {
         cipher_text: new Uint8Array(Object.values(user.password.cipher_text)),
         one_time_code: new Uint8Array(

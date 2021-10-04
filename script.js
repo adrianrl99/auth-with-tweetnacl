@@ -1,4 +1,4 @@
-const david = nacl.box.keyPair();
+const clientPair = nacl.box.keyPair();
 
 async function submit() {
   const text = document.getElementById("result");
@@ -15,8 +15,8 @@ async function submit() {
       method: "POST",
       body: JSON.stringify({
         username: "admin",
-        password: davidEncrypting(publicKey, password),
-        publicKey: david.publicKey,
+        password: clientEncrypting(publicKey, password),
+        publicKey: clientPair.publicKey,
       }),
     });
 
@@ -27,17 +27,17 @@ async function submit() {
   }
 }
 
-function davidEncrypting(publicKey, password) {
-  // David computes a one time shared key
-  const david_shared_key = nacl.box.before(publicKey, david.secretKey);
-  //David also computes a one time code.
+function clientEncrypting(publicKey, password) {
+  // Client computes a one time shared key
+  const client_shared_key = nacl.box.before(publicKey, clientPair.secretKey);
+  //Client also computes a one time code.
   const one_time_code = nacl.randomBytes(24);
-  //Davids message
+  //Clients message
   //Getting the cipher text
   const cipher_text = nacl.box.after(
     nacl.util.decodeUTF8(password),
     one_time_code,
-    david_shared_key
+    client_shared_key
   );
   //message to be transited.
   const message_in_transit = { cipher_text, one_time_code };
