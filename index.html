@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+        min-height: 100vh;
+      }
+      button {
+        background-color: #666;
+        color: #ddd;
+        margin-bottom: 20px;
+      }
+      input {
+        background-color: #666;
+        color: #ddd;
+        margin-bottom: 20px;
+      }
+      div {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <input type="password" id="password">
+      <button type="submit" onclick="submit()">Submit</button>
+      <div>Your password hash is</div>
+      <div id="result"></div>
+    </div>
+    <script src=./nacl-fast.min.js></script>
+    <script src="./nacl-util.min.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>
